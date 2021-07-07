@@ -23,7 +23,6 @@ const Sidebar = (props) => {
   const classes = useStyles();
   const conversations = props.conversations || [];
   const { handleChange, searchTerm } = props;
-
   return (
     <Box className={classes.root}>
       <CurrentUser />
