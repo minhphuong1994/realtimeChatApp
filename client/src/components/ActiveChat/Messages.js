@@ -9,9 +9,8 @@ const Messages = (props) => {
   let next = null;
   return (
     <Box>
-      {messages.map((message,index,arr) => {
-        const time = moment(message.createdAt).format("h:mm");
-{messages.map((message,index) => {
+      {messages.map((message,index) => {
+        const time = moment(message.createdAt).format("h:mm");     
         let marker = false;
         if(message.senderId === userId){
           if(messages.length-1>index){
@@ -28,7 +27,7 @@ const Messages = (props) => {
         ) : (
           <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} />
         );
-      })}
+        })}      
     </Box>
   );
 };
