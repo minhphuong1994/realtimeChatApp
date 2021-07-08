@@ -43,4 +43,23 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+//Update receiverRead to True from a list of read messages.
+// structure of a message is the same as in Message table in DB
+router.put("/", async (req,res,next)=>{
+  try{
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const senderId = req.user.id;    
+    const {readMessages} = req.body   
+    readMessages.forEach(item => {
+      Message.update( { receiverRead: true },{ where: { id: item.id } }) 
+    });
+
+    res.json({ readMessages})
+  } catch (error){
+    next(error);
+  }
+});
+
 module.exports = router;
