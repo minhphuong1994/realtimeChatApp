@@ -19,8 +19,7 @@ const ADD_CONVERSATION = "ADD_CONVERSATION";
 const UPDATE_READ_MESSAGES = "UPDATE_READ_MESSAGES";
 // ACTION CREATORS
 
-export const gotConversations = (conversations) => {
-  console.log(conversations)
+export const gotConversations = (conversations) => {  
   return {
     type: GET_CONVERSATIONS,
     conversations,
