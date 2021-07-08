@@ -6,6 +6,8 @@ import { setActiveChat } from "../../store/activeConversation";
 import { connect } from "react-redux";
 import UnreadMessages, { needUpdateMessages} from "./UnreadChecker";
 import { updateReadMessages } from "../../store/utils/thunkCreators";
+import { updateConvoMessages } from "../../store/conversations";
+import store from "../../store";
 
 const styles = {
   root: {
@@ -28,7 +30,7 @@ class Chat extends Component {
     const recentReadMessages = needUpdateMessages(conversation, otherUserId);  
     if(recentReadMessages.length > 0){
       const {readMessages} = await updateReadMessages(recentReadMessages);  
-      console.log(readMessages)   
+      store.dispatch(updateConvoMessages(conversation.id,readMessages));
     } 
   };
 
