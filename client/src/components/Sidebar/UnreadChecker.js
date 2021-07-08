@@ -25,12 +25,13 @@ const UnreadMessages = (props) =>{
         amount = unreadMessages.length;
     }
 
-    return amount >0? (
+    return amount > 0 && (
         <Box>           
             <Typography className={classes.counter}>
                 {amount}
             </Typography>           
-        </Box>): null;
+        </Box>
+    )
 }
 
 export const needUpdateMessages = (conversation, otherUserId)=>{
