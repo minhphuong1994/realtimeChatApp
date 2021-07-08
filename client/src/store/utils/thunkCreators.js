@@ -85,7 +85,7 @@ const saveMessage = async (body) => {
 
 //send list of recently read messages to server
 export const updateReadMessages = async (readMessages) =>{
-    const { data } = await axios.put("/api/messages", {readMessages});
+    const { data } = await axios.put("/api/messages/read", {readMessages});
     return data; 
 }
 
