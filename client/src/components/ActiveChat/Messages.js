@@ -11,15 +11,16 @@ const Messages = (props) => {
     <Box>
       {messages.map((message,index,arr) => {
         const time = moment(message.createdAt).format("h:mm");
+{messages.map((message,index) => {
         let marker = false;
         if(message.senderId === userId){
-          if(arr.length-1>index){
+          if(messages.length-1>index){
             current = message.receiverRead;
-            next = arr[index+1].receiverRead;
-            marker = current === true && next === false ? true:false;         
+            next = messages[index+1].receiverRead;
+            marker = current && !next;         
           }
           else{
-            marker = message.receiverRead? true:false;
+            marker = message.receiverRead;
           }       
         }
         return message.senderId === userId ? (
