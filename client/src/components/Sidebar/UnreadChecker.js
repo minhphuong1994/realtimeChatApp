@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -14,25 +14,37 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
+
+
 const UnreadMessages = (props) =>{
     const classes = useStyles();
     const conversation = props.conversation || {};
     const {otherUserId} = props;
-    let amount = null;
-    if(conversation){
-        const unreadMessages = conversation.messages.filter(item => item.senderId === otherUserId && 
-            item.receiverRead === false);
-        amount = unreadMessages.length;
-    }
+    const [unreadMessages, setUnreadMessages] = useState(0);    
 
-    return amount > 0 && (
+    useEffect(()=>{
+        if(conversation){        
+            setUnreadMessages(unreadMessageCounter(conversation.messages, otherUserId));
+        }      
+    },[conversation])
+
+    // console.log(unreadMessages)
+    return unreadMessages > 0 && (
         <Box>           
             <Typography className={classes.counter}>
-                {amount}
+                {unreadMessages}
             </Typography>           
         </Box>
     )
 }
+
+export const unreadMessageCounter = (messages, otherUserId) =>{
+    const temp = messages.reduce((counter,message)=>{
+        return counter += (message.senderId === otherUserId && message.receiverRead === false) ? 1 : 0;
+    },0);
+    return temp
+}
+
 
 export const needUpdateMessages = (conversation, otherUserId)=>{
     let result = conversation.messages.filter(item => item.senderId === otherUserId && 
