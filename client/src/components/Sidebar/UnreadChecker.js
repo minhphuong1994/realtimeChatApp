@@ -19,10 +19,10 @@ const useStyles = makeStyles(() => ({
 const UnreadMessages = (props) =>{
     const classes = useStyles();
     const conversation = props.conversation || {};
-    const {otherUserId} = props;
-    const [unreadMessages, setUnreadMessages] = useState(0);    
+    const [unreadMessages, setUnreadMessages] = useState(0);
 
     useEffect(()=>{
+        const {otherUserId} = props;
         if(conversation){        
             setUnreadMessages(unreadMessageCounter(conversation.messages, otherUserId));
         }      

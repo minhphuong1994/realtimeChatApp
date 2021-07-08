@@ -84,14 +84,21 @@ export const addNewConvoToStore = (state, recipientId, message) => {
 
 
 export const updateReadMessagesToStore = (state, conversationId, messages)=>{
+
   return state.map((convo)=>{
     if(convo.id === conversationId){
       const newConvo = { ...convo };
+      const messageIdSet = new Set();
+
+      messages.forEach(message =>{
+        messageIdSet.add(message.id);
+      })
+
       newConvo.messages.forEach(message =>{
-       if(messages.find(item => item.id === message.id)){
-         message.receiverRead = true;
-       }
-      })    
+        if(messageIdSet.has(message.id)){
+          message.receiverRead = true;
+        }
+       })  
       return newConvo;
     }
     else{
