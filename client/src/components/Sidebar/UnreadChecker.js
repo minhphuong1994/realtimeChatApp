@@ -16,19 +16,16 @@ const useStyles = makeStyles(() => ({
 
 
 
-const UnreadMessages = (props) =>{
-    const classes = useStyles();
-    const conversation = props.conversation || {};
+const UnreadMessages = ({conversation,otherUserId}) =>{
+    const classes = useStyles();  
     const [unreadMessages, setUnreadMessages] = useState(0);
-
-    useEffect(()=>{
-        const {otherUserId} = props;
+  
+    useEffect(()=>{        
         if(conversation){        
             setUnreadMessages(unreadMessageCounter(conversation.messages, otherUserId));
         }      
-    },[conversation])
+    },[conversation, otherUserId])
 
-    // console.log(unreadMessages)
     return unreadMessages > 0 && (
         <Box>           
             <Typography className={classes.counter}>
