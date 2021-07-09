@@ -6,11 +6,12 @@ import {
   addOnlineUser,
 } from "./store/conversations";
 
-const socket = io(window.location.origin);
+const ENDPOINT = "http://localhost:3001";
+const socket = io(ENDPOINT,{ transports : ['websocket'] });
 
 socket.on("connect", () => {
   console.log("connected to server");
-
+  
   socket.on("add-online-user", (id) => {
     store.dispatch(addOnlineUser(id));
   });
