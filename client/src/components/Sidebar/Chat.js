@@ -7,7 +7,6 @@ import { connect } from "react-redux";
 import UnreadMessages, { needUpdateMessages} from "./UnreadChecker";
 import { updateReadMessages } from "../../store/utils/thunkCreators";
 import { updateConvoMessages } from "../../store/conversations";
-import store from "../../store";
 
 const styles = {
   root: {
@@ -30,7 +29,7 @@ class Chat extends Component {
     const recentReadMessages = needUpdateMessages(conversation, otherUserId);  
     if(recentReadMessages.length > 0){
       const {readMessages} = await updateReadMessages(recentReadMessages);  
-      store.dispatch(updateConvoMessages(conversation.id,readMessages));
+      this.props.updateConvoMessages(conversation.id,readMessages);
     } 
   };
 
@@ -57,6 +56,7 @@ class Chat extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    updateConvoMessages: (id, readMessages) => dispatch(updateConvoMessages(id, readMessages)),
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
     },
