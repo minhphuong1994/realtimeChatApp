@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FormControl, FilledInput } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
 
 const styles = {
@@ -21,6 +21,9 @@ const Input = (props)=>{
   const { classes } = props;
   const [text,setText] = useState("");
 
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
+
   const handleChange = (event)=>{
     setText(event.target.value);
   };
@@ -32,9 +35,9 @@ const Input = (props)=>{
       text: event.target.text.value,
       recipientId: props.otherUser.id,
       conversationId: props.conversationId,
-      sender: props.conversationId ? null : props.user,
+      sender: props.conversationId ? null : user,
     };
-    await props.postMessage(reqBody);
+    dispatch(postMessage(reqBody));
     setText("");
   };
 
@@ -54,22 +57,4 @@ const Input = (props)=>{
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    user: state.user,
-    conversations: state.conversations,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    postMessage: (message) => {
-      dispatch(postMessage(message));
-    },
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(Input));
+export default withStyles(styles)(Input);
