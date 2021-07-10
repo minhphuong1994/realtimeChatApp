@@ -46,8 +46,8 @@ io.use((socket, next)=>{
 })
 .on("connection", (socket) => {
   socket.on("go-online", (id) => {
-    if (!onlineUsers.includes(id)) {
-      onlineUsers.push(id);
+    if (!onlineUsers.has(id)) {
+      onlineUsers.add(id);
     }
     //add userId to room for later new-message update
     socket.join(id);
@@ -64,9 +64,8 @@ io.use((socket, next)=>{
   });
 
   socket.on("logout", (id) => {
-    if (onlineUsers.includes(id)) {
-      userIndex = onlineUsers.indexOf(id);
-      onlineUsers.splice(userIndex, 1);
+    if (onlineUsers.has(id)) {
+      onlineUsers.delete(id)
       socket.broadcast.emit("remove-offline-user", id);
     }
   });
