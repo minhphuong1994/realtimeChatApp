@@ -83,6 +83,12 @@ const saveMessage = async (body) => {
   return data;
 };
 
+//send list of recently read messages to server
+export const updateReadMessages = async (readMessages) =>{
+    const { data } = await axios.put("/api/messages/read", {readMessages});
+    return data; 
+}
+
 const sendMessage = (data, body) => {
   socket.emit("new-message", {
     message: data.message,

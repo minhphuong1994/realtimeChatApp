@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { unreadMessageCounter } from "./UnreadChecker";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,6 +17,12 @@ const useStyles = makeStyles((theme) => ({
   previewText: {
     fontSize: 12,
     color: "#9CADC8",
+    letterSpacing: -0.17,
+  },
+  previewTextBold: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "black",
     letterSpacing: -0.17,
   },
   notification: {
@@ -39,14 +46,15 @@ const ChatContent = (props) => {
 
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
-
+  const checkUnread = unreadMessageCounter(conversation.messages,otherUser.id);
+ 
   return (
     <Box className={classes.root}>
       <Box>
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={classes.previewText}>
+        <Typography className={checkUnread>0? classes.previewTextBold:classes.previewText}>
           {latestMessageText}
         </Typography>
       </Box>

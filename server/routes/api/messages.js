@@ -43,4 +43,31 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+//Update receiverRead to True from a list of read messages.
+// structure of a message is the same as in Message table in DB
+router.put("/read", async (req,res,next)=>{
+  try{
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const senderId = req.user.id;    
+    const {readMessages} = req.body   
+
+    // check if the sender belongs to the message before update it
+    const conversationData = await Conversation.findByPk(readMessages[0].conversationId);
+    const conversationOwners = [conversationData.dataValues.user1Id,conversationData.dataValues.user2Id];
+    if(conversationOwners.includes(senderId)){      
+      readMessages.forEach( async message => {
+        return message = await Message.update( { receiverRead: true },{ where: {id:message.id} });    
+      });         
+      return res.json({ readMessages });  
+    } 
+    else{
+      return res.sendStatus(403);
+    }
+  } catch (error){
+    next(error);
+  }
+});
+
 module.exports = router;

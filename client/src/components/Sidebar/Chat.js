@@ -4,6 +4,9 @@ import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { withStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
 import { connect } from "react-redux";
+import UnreadMessages, { needUpdateMessages} from "./UnreadChecker";
+import { updateReadMessages } from "../../store/utils/thunkCreators";
+import { updateConvoMessages } from "../../store/conversations";
 
 const styles = {
   root: {
@@ -20,8 +23,14 @@ const styles = {
 };
 
 class Chat extends Component {
-  handleClick = async (conversation) => {
-    await this.props.setActiveChat(conversation.otherUser.username);
+  handleClick = async (conversation, otherUserId) => {
+    await this.props.setActiveChat(conversation.otherUser.username);  
+    //update unread to read and send to server list of recent read messages
+    const recentReadMessages = needUpdateMessages(conversation, otherUserId);  
+    if(recentReadMessages.length > 0){
+      const {readMessages} = await updateReadMessages(recentReadMessages);  
+      this.props.updateConvoMessages(conversation.id,readMessages);
+    } 
   };
 
   render() {
@@ -29,7 +38,7 @@ class Chat extends Component {
     const otherUser = this.props.conversation.otherUser;
     return (
       <Box
-        onClick={() => this.handleClick(this.props.conversation)}
+        onClick={() => this.handleClick(this.props.conversation, otherUser.id)}
         className={classes.root}
       >
         <BadgeAvatar
@@ -39,6 +48,7 @@ class Chat extends Component {
           sidebar={true}
         />
         <ChatContent conversation={this.props.conversation} />
+        <UnreadMessages conversation={this.props.conversation} otherUserId={otherUser.id}/>
       </Box>
     );
   }
@@ -46,6 +56,7 @@ class Chat extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    updateConvoMessages: (id, readMessages) => dispatch(updateConvoMessages(id, readMessages)),
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
     },
