@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { Component } from "react";
 import { FormControl, FilledInput } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import { useSelector, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
 
 const styles = {
@@ -17,44 +17,70 @@ const styles = {
   },
 };
 
-const Input = (props)=>{
-  const { classes } = props;
-  const [text,setText] = useState("");
+class Input extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      text: "",
+    };
+  }
 
-  const user = useSelector(state => state.user);
-  const dispatch = useDispatch();
-
-  const handleChange = (event)=>{
-    setText(event.target.value);
+  handleChange = (event) => {
+    this.setState({
+      text: event.target.value,
+    });
   };
 
-  const handleSubmit = async (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
     const reqBody = {
       text: event.target.text.value,
-      recipientId: props.otherUser.id,
-      conversationId: props.conversationId,
-      sender: props.conversationId ? null : user,
+      recipientId: this.props.otherUser.id,
+      conversationId: this.props.conversationId,
+      sender: this.props.conversationId ? null : this.props.user,
     };
-    dispatch(postMessage(reqBody));
-    setText("");
+    await this.props.postMessage(reqBody);
+    this.setState({
+      text: "",
+    });
   };
 
-  return (
-    <form className={classes.root} onSubmit={handleSubmit}>
+  render() {
+    const { classes } = this.props;
+    return (
+      <form className={classes.root} onSubmit={this.handleSubmit}>
         <FormControl fullWidth hiddenLabel>
           <FilledInput
             classes={{ root: classes.input }}
             disableUnderline
             placeholder="Type something..."
-            value={text}
+            value={this.state.text}
             name="text"
-            onChange={handleChange}
+            onChange={this.handleChange}
           />
         </FormControl>
       </form>
-  )
+    );
+  }
 }
 
-export default withStyles(styles)(Input);
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+    conversations: state.conversations,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    postMessage: (message) => {
+      dispatch(postMessage(message));
+    },
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Input));
