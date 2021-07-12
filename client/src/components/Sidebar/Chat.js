@@ -1,12 +1,13 @@
-import React, { Component } from "react";
+import React from "react";
 import { Box } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { withStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import UnreadMessages, { needUpdateMessages} from "./UnreadChecker";
 import { updateReadMessages } from "../../store/utils/thunkCreators";
 import { updateConvoMessages } from "../../store/conversations";
+
 
 const styles = {
   root: {
@@ -22,45 +23,38 @@ const styles = {
   },
 };
 
-class Chat extends Component {
-  handleClick = async (conversation, otherUserId) => {
-    await this.props.setActiveChat(conversation.otherUser.username);  
+
+const Chat = (props)=>{
+  const { classes } = props;
+  const otherUser = props.conversation.otherUser;
+  const dispatch = useDispatch();
+
+  const handleClick = async (conversation) => {
+    dispatch(setActiveChat(conversation.otherUser.username));
     //update unread to read and send to server list of recent read messages
     const recentReadMessages = needUpdateMessages(conversation, otherUserId);  
     if(recentReadMessages.length > 0){
       const {readMessages} = await updateReadMessages(recentReadMessages);  
-      this.props.updateConvoMessages(conversation.id,readMessages);
-    } 
+      dispatch(updateConvoMessages(conversation.id,readMessages));
+    }
   };
 
-  render() {
-    const { classes } = this.props;
-    const otherUser = this.props.conversation.otherUser;
-    return (
-      <Box
-        onClick={() => this.handleClick(this.props.conversation, otherUser.id)}
-        className={classes.root}
-      >
-        <BadgeAvatar
-          photoUrl={otherUser.photoUrl}
-          username={otherUser.username}
-          online={otherUser.online}
-          sidebar={true}
-        />
-        <ChatContent conversation={this.props.conversation} />
-        <UnreadMessages conversation={this.props.conversation} otherUserId={otherUser.id}/>
-      </Box>
-    );
-  }
+  return (
+    <Box
+      onClick={() => handleClick(props.conversation)}
+      className={classes.root}
+    >
+      <BadgeAvatar
+        photoUrl={otherUser.photoUrl}
+        username={otherUser.username}
+        online={otherUser.online}
+        sidebar={true}
+      />
+      <ChatContent conversation={props.conversation} />
+      <UnreadMessages conversation={props.conversation} otherUserId={otherUser.id}/>
+    </Box>
+  );
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateConvoMessages: (id, readMessages) => dispatch(updateConvoMessages(id, readMessages)),
-    setActiveChat: (id) => {
-      dispatch(setActiveChat(id));
-    },
-  };
-};
+export default withStyles(styles)(Chat);
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(Chat));

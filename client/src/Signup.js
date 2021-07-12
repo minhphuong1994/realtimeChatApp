@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Grid,
   Box,
@@ -14,8 +14,9 @@ import { register } from "./store/utils/thunkCreators";
 
 const Login = (props) => {
   const history = useHistory();
-  const { user, register } = props;
   const [formErrorMessage, setFormErrorMessage] = useState({});
+  const user = useSelector(state =>state.user);
+  const dispatch = useDispatch();
 
   const handleRegister = async (event) => {
     event.preventDefault();
@@ -28,8 +29,7 @@ const Login = (props) => {
       setFormErrorMessage({ confirmPassword: "Passwords must match" });
       return;
     }
-
-    await register({ username, email, password });
+    dispatch(register({ username, email, password }));
   };
 
   if (user.id) {
@@ -37,7 +37,7 @@ const Login = (props) => {
   }
 
   return (
-    <Grid container justify="center">
+    <Grid container justifyContent="center">
       <Box>
         <Grid container item>
           <Typography>Need to log in?</Typography>
@@ -107,18 +107,4 @@ const Login = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    user: state.user,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    register: (credentials) => {
-      dispatch(register(credentials));
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login;
