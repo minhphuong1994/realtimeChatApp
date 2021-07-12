@@ -7,8 +7,7 @@ import {
 } from "./store/conversations";
 
 const token = localStorage.getItem("messenger-token");
-const ENDPOINT = "http://localhost:3001";
-const socket = io(ENDPOINT,{ 
+const socket = io(process.env.REACT_APP_SOCKET_ENDPOINT,{ 
   query: {token},
   transports : ['websocket'] });
 
