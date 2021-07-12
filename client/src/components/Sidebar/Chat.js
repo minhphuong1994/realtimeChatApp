@@ -32,7 +32,7 @@ const Chat = (props)=>{
   const handleClick = async (conversation) => {
     dispatch(setActiveChat(conversation.otherUser.username));
     //update unread to read and send to server list of recent read messages
-    const recentReadMessages = needUpdateMessages(conversation, otherUserId);  
+    const recentReadMessages = needUpdateMessages(conversation, otherUser.id);  
     if(recentReadMessages.length > 0){
       const {readMessages} = await updateReadMessages(recentReadMessages);  
       dispatch(updateConvoMessages(conversation.id,readMessages));
