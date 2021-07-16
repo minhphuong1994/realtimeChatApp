@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Avatar } from "@material-ui/core";
+import MessageLinkDisplay from "./MessageLinkDisplay";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,7 +41,7 @@ const SenderBubble = (props) => {
     <Box className={classes.root}>
       <Typography className={classes.date}>{time}</Typography>
       <Box className={classes.bubble}>
-        <Typography className={classes.text}>{text}</Typography>
+        <MessageLinkDisplay styleName={classes.text} message={text} />
       </Box>
       {
         marker && <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}/>

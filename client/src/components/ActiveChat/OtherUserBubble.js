@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Avatar } from "@material-ui/core";
+import MessageLinkDisplay from "./MessageLinkDisplay";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -42,7 +43,7 @@ const OtherUserBubble = (props) => {
           {otherUser.username} {time}
         </Typography>
         <Box className={classes.bubble}>
-          <Typography className={classes.text}>{text}</Typography>
+          <MessageLinkDisplay styleName={classes.text} message={text} />
         </Box>
       </Box>
     </Box>
