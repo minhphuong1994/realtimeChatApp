@@ -1,14 +1,32 @@
-import React from "react";
-import { Box } from "@material-ui/core";
+import React, {useEffect,useRef} from "react";
+import { Box, makeStyles, } from "@material-ui/core";
 import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import moment from "moment";
 
+
+
+const useStyles = makeStyles(() => ({
+  chatbox: {
+    overflowY: "scroll",
+  },
+}));
+
 const Messages = (props) => {
+  const classes = useStyles();
+  const scrollRef = useRef(null);
   const { messages, otherUser, userId } = props;
+
+
+  useEffect(()=>{  
+    scrollRef.current.scrollIntoView({ behaviour: "smooth" });
+  },[messages.length])
+  
   let current = null;
   let next = null;
+
+
   return (
-    <Box>
+    <Box className={classes.chatbox}>
       {messages.map((message,index) => {
         const time = moment(message.createdAt).format("h:mm");     
         let marker = false;
@@ -27,7 +45,8 @@ const Messages = (props) => {
         ) : (
           <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} />
         );
-        })}      
+        })}
+        <div ref={scrollRef}></div> 
     </Box>
   );
 };
